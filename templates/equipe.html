@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Equipe Assistencial</title>
+</head>
+<body>
+    <h1>Todos os Dados</h1>
+    <table border="1">
+        <tr>
+            <th>Paciente ID</th>
+            <th>Data</th>
+            <th>Pressão Arterial</th>
+            <th>Frequência Cardíaca</th>
+            <th>Exames</th>
+            <th>Sintomas</th>
+        </tr>
+        {% for dado in todos_dados %}
+        <tr>
+            <td>{{ dado[1] }}</td>
+            <td>{{ dado[2] }}</td>
+            <td>{{ dado[3] }}</td>
+            <td>{{ dado[4] }}</td>
+            <td>{{ dado[5] }}</td>
+            <td>{{ dado[6] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<form method="POST">
+    <input type="date" name="data" required>
+    <input type="text" name="pressao_arterial" placeholder="Pressão Arterial">
+    <input type="number" name="frequencia_cardiaca" placeholder="Frequência Cardíaca">
+    <textarea name="exames" placeholder="Exames"></textarea>
+    <textarea name="sintomas" placeholder="Sintomas"></textarea>
+    <button type="submit">Salvar Dados</button>
+</form>
+
+<h2>Seus Dados</h2>
+<table>
+    <tr>
+        <th>Data</th>
+        <th>Pressão Arterial</th>
+        <th>Frequência Cardíaca</th>
+        <th>Exames</th>
+        <th>Sintomas</th>
+    </tr>
+    {% for dado in dados %}
+    <tr>
+        <td>{{ dado[2] }}</td>
+        <td>{{ dado[3] }}</td>
+        <td>{{ dado[4] }}</td>
+        <td>{{ dado[5] }}</td>
+        <td>{{ dado[6] }}</td>
+    </tr>
+    {% endfor %}
+</table>
