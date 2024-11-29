@@ -37,6 +37,8 @@ def init_db():
             sintomas TEXT,
             exames TEXT,
             receita TEXT,
+            observacao TEXT,
+            lido BOOLEAN DEFAULT 0, -- 0 para não lido, 1 para lido
             FOREIGN KEY (paciente_id) REFERENCES pacientes (id)
         )
     ''')
@@ -188,7 +190,7 @@ def historico_pdf():
     html = render_template('historico_pdf.html', dados=dados)
     return render_pdf(HTML(string=html))
 
-@app.route('/equipe', methods=['GET'])
+@app.route('/equipe', methods=['GET', 'POST'])
 def equipe():
     if 'paciente_id' not in session or session.get('tipo_usuario') != 'equipe':
         flash('Acesso não autorizado.', 'error')
@@ -197,31 +199,36 @@ def equipe():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT pacientes.nome, dados_saude.data_hora, dados_saude.pressao_sistolica,
-               dados_saude.pressao_diastolica, dados_saude.frequencia_cardiaca,
-               dados_saude.peso, dados_saude.saturacao_oxigenio, dados_saude.glicemia,
-               dados_saude.sintomas, dados_saude.exames, dados_saude.receita
+        SELECT dados_saude.id, pacientes.nome, dados_saude.data_hora, dados_saude.pressao_sistolica,
+               dados_saude.pressao_diastolica, dados_saude.frequencia_cardiaca, dados_saude.peso,
+               dados_saude.saturacao_oxigenio, dados_saude.glicemia, dados_saude.sintomas,
+               dados_saude.exames, dados_saude.receita, dados_saude.observacao, dados_saude.lido
         FROM dados_saude
         INNER JOIN pacientes ON pacientes.id = dados_saude.paciente_id
         ORDER BY pacientes.nome, dados_saude.data_hora DESC
     ''')
-    todos_dados = cursor.fetchall()
-
-    dados_formatados = []
-    for dado in todos_dados:
-        dado = [d if d is not None else '-' for d in dado]
-        critico = {
-            "pressao_sistolica": dado[2] != '-' and (int(dado[2]) > 150 or int(dado[2]) < 85),
-            "pressao_diastolica": dado[3] != '-' and (int(dado[3]) > 100 or int(dado[3]) < 40),
-            "frequencia_cardiaca": dado[4] != '-' and (int(dado[4]) > 100 or int(dado[4]) < 45),
-            "peso": dado[5] != '-' and (float(dado[5]) < 20 or float(dado[5]) > 300),
-            "saturacao_oxigenio": dado[6] != '-' and (int(dado[6]) < 90),
-            "glicemia": dado[7] != '-' and (int(dado[7]) > 200 or int(dado[7]) < 70)
-        }
-        dados_formatados.append((dado, critico))
-
+    dados = cursor.fetchall()
     conn.close()
-    return render_template('equipe.html', dados_formatados=dados_formatados)
+
+    if request.method == 'POST':
+        for index, dado in enumerate(dados):
+            observacao = request.form.get(f'observacao_{index}')
+            lido = request.form.get(f'lido_{index}') == 'on'  # Se o checkbox estiver marcado
+
+            conn = sqlite3.connect('database.db')
+            cursor = conn.cursor()
+            cursor.execute('''
+                UPDATE dados_saude
+                SET observacao = ?, lido = ?
+                WHERE id = ?
+            ''', (observacao, lido, dado[0]))
+            conn.commit()
+            conn.close()
+
+        flash('Observações e estados atualizados com sucesso!', 'success')
+        return redirect(url_for('equipe'))
+
+    return render_template('equipe.html', dados=dados)
 
 if __name__ == '__main__':
     init_db()

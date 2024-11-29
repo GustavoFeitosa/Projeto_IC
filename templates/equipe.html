@@ -11,44 +11,63 @@
             color: #ff0000 !important; /* Vermelho brilhante */
             font-weight: bold;
         }
+
+        /* Estilo para a linha lida */
+        .lido {
+            background-color: #f0f0f0;  /* Fundo mais claro */
+            opacity: 0.2;  /* Aplica transparência */
+        }
     </style>
 </head>
 <body class="container mt-5">
     <h1 class="text-center">Dados dos Pacientes</h1>
-    <table class="table table-hover table-bordered">
-        <thead class="table-light">
-            <tr>
-                <th>Paciente</th>
-                <th>Data/Hora</th>
-                <th>Pressão Sistólica</th>
-                <th>Pressão Diastólica</th>
-                <th>Frequência Cardíaca</th>
-                <th>Peso</th>
-                <th>Saturação</th>
-                <th>Glicemia</th>
-                <th>Sintomas</th>
-                <th>Exames</th>
-                <th>Receita</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for dado, critico in dados_formatados %}
-            <tr>
-                <td>{{ dado[0] }}</td>
-                <td>{{ dado[1] }}</td>
-                <td class="{% if critico.pressao_sistolica %}critico{% endif %}">{{ dado[2] if dado[2] != '-' else '-' }}</td>
-                <td class="{% if critico.pressao_diastolica %}critico{% endif %}">{{ dado[3] if dado[3] != '-' else '-' }}</td>
-                <td class="{% if critico.frequencia_cardiaca %}critico{% endif %}">{{ dado[4] if dado[4] != '-' else '-' }}</td>
-                <td class="{% if critico.peso %}critico{% endif %}">{{ dado[5] if dado[5] != '-' else '-' }}</td>
-                <td class="{% if critico.saturacao_oxigenio %}critico{% endif %}">{{ dado[6] if dado[6] != '-' else '-' }}</td>
-                <td class="{% if critico.glicemia %}critico{% endif %}">{{ dado[7] if dado[7] != '-' else '-' }}</td>
-                <td>{{ dado[8] if dado[8] != '-' else '-' }}</td>
-                <td>{{ dado[9] if dado[9] != '-' else '-' }}</td>
-                <td>{{ dado[10] if dado[10] != '-' else '-' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <form method="POST">
+        <table class="table table-hover table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Paciente</th>
+                    <th>Data/Hora</th>
+                    <th>Pressão Sistólica</th>
+                    <th>Pressão Diastólica</th>
+                    <th>Frequência Cardíaca</th>
+                    <th>Peso</th>
+                    <th>Saturação</th>
+                    <th>Glicemia</th>
+                    <th>Sintomas</th>
+                    <th>Exames</th>
+                    <th>Receita</th>
+                    <th>Observações</th>
+                    <th>Lido</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dado in dados %}
+                <tr class="{% if dado[13] %}lido{% endif %}">
+                    <td>{{ dado[1] if dado[1] else '' }}</td>
+                    <td>{{ dado[2] if dado[2] else '' }}</td>
+                    <td class="{% if dado[3] == 'crítico' %}critico{% endif %}">{{ dado[3] if dado[3] else '' }}</td>
+                    <td class="{% if dado[4] == 'crítico' %}critico{% endif %}">{{ dado[4] if dado[4] else '' }}</td>
+                    <td class="{% if dado[5] == 'crítico' %}critico{% endif %}">{{ dado[5] if dado[5] else '' }}</td>
+                    <td class="{% if dado[6] == 'crítico' %}critico{% endif %}">{{ dado[6] if dado[6] else '' }}</td>
+                    <td class="{% if dado[7] == 'crítico' %}critico{% endif %}">{{ dado[7] if dado[7] else '' }}</td>
+                    <td class="{% if dado[8] == 'crítico' %}critico{% endif %}">{{ dado[8] if dado[8] else '' }}</td>
+                    <td>{{ dado[9] if dado[9] else '' }}</td>
+                    <td>{{ dado[10] if dado[10] else '' }}</td>
+                    <td>{{ dado[11] if dado[11] else '' }}</td>
+                    <td>
+                        <input type="text" name="observacao_{{ loop.index0 }}" value="{{ dado[12] if dado[12] else '' }}" class="form-control">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="lido_{{ loop.index0 }}" {% if dado[13] %}checked{% endif %}>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Salvar Observações</button>
+        </div>
+    </form>
 
     <div class="text-center mt-4">
         <a href="/logout" class="btn btn-danger">Sair</a>
