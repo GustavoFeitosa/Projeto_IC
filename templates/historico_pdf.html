@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Registros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            max-width: 100%; /* Garante que a tabela respeite as margens */
+            border-collapse: collapse;
+            table-layout: fixed; /* Força as células a respeitarem o espaço disponível */
+            word-wrap: break-word; /* Quebra palavras longas automaticamente */
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 5px; /* Reduz o padding para ajustar ao espaço */
+            text-align: left;
+            font-size: 12px; /* Reduz a fonte para caber melhor */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+            font-size: 16px; /* Reduz o tamanho do título */
+        }
+    </style>
+</head>
+<body>
+    <h1>Histórico de Registros</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Data/Hora</th>
+                <th>Pressão Sistólica</th>
+                <th>Pressão Diastólica</th>
+                <th>Frequência Cardíaca</th>
+                <th>Peso</th>
+                <th>Saturação</th>
+                <th>Glicemia</th>
+                <th>Sintomas</th>
+                <th>Exames</th>
+                <th>Receita</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dado in dados %}
+            <tr>
+                <td>{{ dado[2] }}</td>
+                <td>{{ dado[3] if dado[3] else '-' }}</td>
+                <td>{{ dado[4] if dado[4] else '-' }}</td>
+                <td>{{ dado[5] if dado[5] else '-' }}</td>
+                <td>{{ dado[6] if dado[6] else '-' }}</td>
+                <td>{{ dado[7] if dado[7] else '-' }}</td>
+                <td>{{ dado[8] if dado[8] else '-' }}</td>
+                <td>{{ dado[9] if dado[9] else '-' }}</td>
+                <td>{{ dado[10] if dado[10] else '-' }}</td>
+                <td>{{ dado[11] if dado[11] else '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

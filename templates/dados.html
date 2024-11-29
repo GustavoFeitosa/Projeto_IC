@@ -1,45 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Seus Dados</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Dados</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .is-invalid {
+            border: 2px solid red;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: -5px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const fields = [
+                { id: 'pressao_sistolica', min: 50, max: 330 },
+                { id: 'pressao_diastolica', min: 10, max: 230 },
+                { id: 'frequencia_cardiaca', min: 30, max: 220 },
+                { id: 'peso', min: 20, max: 300 },
+                { id: 'saturacao_oxigenio', min: 51, max: 100 },
+                { id: 'glicemia', min: 11, max: 500 }
+            ];
+
+            // Adicionar evento de validação a cada campo
+            fields.forEach(field => {
+                const input = document.getElementById(field.id);
+                const errorSpan = document.createElement('span');
+                errorSpan.className = 'error-message';
+                input.parentElement.appendChild(errorSpan);
+
+                input.addEventListener('input', function () {
+                    const value = parseFloat(input.value);
+                    if (value < field.min || value > field.max) {
+                        input.classList.add('is-invalid');
+                        errorSpan.textContent = `Valor fora da margem aceita (${field.min} - ${field.max}).`;
+                    } else {
+                        input.classList.remove('is-invalid');
+                        errorSpan.textContent = '';
+                    }
+                });
+            });
+
+            // Validação ao submeter o formulário
+            form.addEventListener('submit', function (event) {
+                let hasError = false;
+                fields.forEach(field => {
+                    const input = document.getElementById(field.id);
+                    const value = parseFloat(input.value);
+                    if (input.value && (value < field.min || value > field.max)) {
+                        input.classList.add('is-invalid');
+                        hasError = true;
+                    }
+                });
+                if (hasError) {
+                    event.preventDefault();
+                    alert('Corrija os erros antes de enviar o formulário.');
+                }
+            });
+        });
+    </script>
 </head>
 <body class="container mt-5">
     <h1 class="text-center">Registrar Dados</h1>
+
+    <!-- Exibir mensagens de erro (Flask) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                {{ messages[-1][1] }}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Formulário -->
     <form method="POST" class="row g-3">
         <div class="col-md-6">
-            <label for="pressao_sistolica" class="form-label">Pressão Sistólica</label>
-            <input type="number" id="pressao_sistolica" name="pressao_sistolica" class="form-control" required>
+            <label for="pressao_sistolica" class="form-label">Pressão Sistólica (em mmHg)</label>
+            <input type="number" name="pressao_sistolica" id="pressao_sistolica" class="form-control" placeholder="50 - 330">
         </div>
         <div class="col-md-6">
-            <label for="pressao_diastolica" class="form-label">Pressão Diastólica</label>
-            <input type="number" id="pressao_diastolica" name="pressao_diastolica" class="form-control" required>
+            <label for="pressao_diastolica" class="form-label">Pressão Diastólica (em mmHg)</label>
+            <input type="number" name="pressao_diastolica" id="pressao_diastolica" class="form-control" placeholder="10 - 230">
         </div>
         <div class="col-md-6">
-            <label for="frequencia_cardiaca" class="form-label">Frequência Cardíaca</label>
-            <input type="number" id="frequencia_cardiaca" name="frequencia_cardiaca" class="form-control" required>
+            <label for="frequencia_cardiaca" class="form-label">Frequência Cardíaca (em bpm)</label>
+            <input type="number" name="frequencia_cardiaca" id="frequencia_cardiaca" class="form-control" placeholder="30 - 220">
         </div>
         <div class="col-md-6">
-            <label for="peso" class="form-label">Peso (kg)</label>
-            <input type="number" step="0.1" id="peso" name="peso" class="form-control" required>
+            <label for="peso" class="form-label">Peso (em Kg)</label>
+            <input type="number" step="0.1" name="peso" id="peso" class="form-control" placeholder="20 - 300">
+        </div>
+        <div class="col-md-6">
+            <label for="saturacao_oxigenio" class="form-label">Saturação de Oxigênio (em %)</label>
+            <input type="number" name="saturacao_oxigenio" id="saturacao_oxigenio" class="form-control" placeholder="51 - 100">
+        </div>
+        <div class="col-md-6">
+            <label for="glicemia" class="form-label">Glicemia (em mg/dl)</label>
+            <input type="number" name="glicemia" id="glicemia" class="form-control" placeholder="11 - 500">
+        </div>
+        <div class="col-12">
+            <label for="sintomas" class="form-label">Sintomas</label>
+            <textarea name="sintomas" id="sintomas" class="form-control" placeholder="Descreva os sintomas (opcional)"></textarea>
+        </div>
+        <div class="col-12">
+            <label for="exames" class="form-label">Exames</label>
+            <textarea name="exames" id="exames" class="form-control" placeholder="Descreva os exames realizados (opcional)"></textarea>
         </div>
         <div class="col-12">
             <label for="receita" class="form-label">Receita</label>
-            <textarea id="receita" name="receita" class="form-control"></textarea>
+            <textarea name="receita" id="receita" class="form-control" placeholder="Descreva as prescrições (opcional)"></textarea>
         </div>
         <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="submit" class="btn btn-primary">Salvar Dados</button>
         </div>
     </form>
-    <h2 class="text-center mt-5">Histórico</h2>
-    <table class="table table-striped">
-        <thead>
+
+    <!-- Histórico de Registros -->
+    <h2 class="text-center mt-5">Histórico de Registros</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="table-light">
             <tr>
                 <th>Data/Hora</th>
                 <th>Pressão Sistólica</th>
                 <th>Pressão Diastólica</th>
                 <th>Frequência Cardíaca</th>
                 <th>Peso</th>
+                <th>Saturação</th>
+                <th>Glicemia</th>
+                <th>Sintomas</th>
+                <th>Exames</th>
                 <th>Receita</th>
             </tr>
         </thead>
@@ -47,16 +141,28 @@
             {% for dado in dados %}
             <tr>
                 <td>{{ dado[2] }}</td>
-                <td>{{ dado[3] }}</td>
-                <td>{{ dado[4] }}</td>
-                <td>{{ dado[5] }}</td>
-                <td>{{ dado[6] }}</td>
-                <td>{{ dado[7] }}</td>
+                <td>{{ dado[3] if dado[3] != None else '-' }}</td>
+                <td>{{ dado[4] if dado[4] != None else '-' }}</td>
+                <td>{{ dado[5] if dado[5] != None else '-' }}</td>
+                <td>{{ dado[6] if dado[6] != None else '-' }}</td>
+                <td>{{ dado[7] if dado[7] != None else '-' }}</td>
+                <td>{{ dado[8] if dado[8] != None else '-' }}</td>
+                <td>{{ dado[9] if dado[9] != None else '-' }}</td>
+                <td>{{ dado[10] if dado[10] != None else '-' }}</td>
+                <td>{{ dado[11] if dado[11] != None else '-' }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Botão de Download do Histórico -->
+    <div class="text-center mt-4">
+        <a href="/historico_pdf" class="btn btn-secondary">Baixar Histórico em PDF</a>
+    </div>
+
+    <!-- Botão de Logout -->
+    <div class="text-center mt-4">
+        <a href="/logout" class="btn btn-danger">Sair</a>
+    </div>
 </body>
 </html>
-
-
