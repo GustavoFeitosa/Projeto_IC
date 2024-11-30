@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +9,36 @@
         .is-invalid {
             border: 2px solid red;
         }
+
         .error-message {
             color: red;
             font-size: 0.9em;
             margin-top: -5px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Estilo para campos obrigatórios */
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+
+        /* Estilo para as mensagens de sucesso */
+        .success-message {
+            color: green;
+            font-size: 1.1em;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            font-weight: bold;
         }
     </style>
     <script>
@@ -79,42 +105,52 @@
 
     <!-- Formulário -->
     <form method="POST" class="row g-3">
-        <div class="col-md-6">
-            <label for="pressao_sistolica" class="form-label">Pressão Sistólica (em mmHg)</label>
+        
+        <div class="form-section col-md-6">
+            <label for="pressao_sistolica" class="form-label required-field">Pressão Sistólica (em mmHg)</label>
             <input type="number" name="pressao_sistolica" id="pressao_sistolica" class="form-control" placeholder="50 - 330">
         </div>
-        <div class="col-md-6">
-            <label for="pressao_diastolica" class="form-label">Pressão Diastólica (em mmHg)</label>
+        
+        <div class="form-section col-md-6">
+            <label for="pressao_diastolica" class="form-label required-field">Pressão Diastólica (em mmHg)</label>
             <input type="number" name="pressao_diastolica" id="pressao_diastolica" class="form-control" placeholder="10 - 230">
         </div>
-        <div class="col-md-6">
-            <label for="frequencia_cardiaca" class="form-label">Frequência Cardíaca (em bpm)</label>
+        
+        <div class="form-section col-md-6">
+            <label for="frequencia_cardiaca" class="form-label required-field">Frequência Cardíaca (em bpm)</label>
             <input type="number" name="frequencia_cardiaca" id="frequencia_cardiaca" class="form-control" placeholder="30 - 220">
         </div>
-        <div class="col-md-6">
-            <label for="peso" class="form-label">Peso (em Kg)</label>
+        
+        <div class="form-section col-md-6">
+            <label for="peso" class="form-label required-field">Peso (em Kg)</label>
             <input type="number" step="0.1" name="peso" id="peso" class="form-control" placeholder="20 - 300">
         </div>
-        <div class="col-md-6">
-            <label for="saturacao_oxigenio" class="form-label">Saturação de Oxigênio (em %)</label>
+        
+        <div class="form-section col-md-6">
+            <label for="saturacao_oxigenio" class="form-label required-field">Saturação de Oxigênio (em %)</label>
             <input type="number" name="saturacao_oxigenio" id="saturacao_oxigenio" class="form-control" placeholder="51 - 100">
         </div>
-        <div class="col-md-6">
-            <label for="glicemia" class="form-label">Glicemia (em mg/dl)</label>
+        
+        <div class="form-section col-md-6">
+            <label for="glicemia" class="form-label required-field">Glicemia (em mg/dl)</label>
             <input type="number" name="glicemia" id="glicemia" class="form-control" placeholder="11 - 500">
         </div>
-        <div class="col-12">
+        
+        <div class="form-section col-12">
             <label for="sintomas" class="form-label">Sintomas</label>
             <textarea name="sintomas" id="sintomas" class="form-control" placeholder="Descreva os sintomas (opcional)"></textarea>
         </div>
-        <div class="col-12">
+        
+        <div class="form-section col-12">
             <label for="exames" class="form-label">Exames</label>
             <textarea name="exames" id="exames" class="form-control" placeholder="Descreva os exames realizados (opcional)"></textarea>
         </div>
-        <div class="col-12">
+        
+        <div class="form-section col-12">
             <label for="receita" class="form-label">Receita</label>
             <textarea name="receita" id="receita" class="form-control" placeholder="Descreva as prescrições (opcional)"></textarea>
         </div>
+        
         <div class="col-12 text-center">
             <button type="submit" class="btn btn-primary">Salvar Dados</button>
         </div>

@@ -6,21 +6,39 @@
     <title>Dados da Equipe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Estilo para valores críticos */
         .critico {
             color: #ff0000 !important; /* Vermelho brilhante */
             font-weight: bold;
         }
-
-        /* Estilo para a linha lida */
         .lido {
-            background-color: #f0f0f0;  /* Fundo mais claro */
-            opacity: 0.2;  /* Aplica transparência */
+            background-color: #f0f0f0;
+            opacity: 0.1;
         }
     </style>
 </head>
 <body class="container mt-5">
     <h1 class="text-center">Dados dos Pacientes</h1>
+
+    <!-- Filtros de Data -->
+    <form method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <select name="filtro" class="form-select">
+                    <option value="todos" {% if filtro == 'todos' %}selected{% endif %}>Sem Filtro</option>
+                    <option value="30" {% if filtro == '30' %}selected{% endif %}>Últimos 30 dias</option>
+                    <option value="15" {% if filtro == '15' %}selected{% endif %}>Últimos 15 dias</option>
+                    <option value="10" {% if filtro == '10' %}selected{% endif %}>Últimos 10 dias</option>
+                    <option value="5" {% if filtro == '5' %}selected{% endif %}>Últimos 5 dias</option>
+                    <option value="2" {% if filtro == '2' %}selected{% endif %}>Últimos 2 dias</option>
+                    <option value="1" {% if filtro == '1' %}selected{% endif %}>Último dia</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Aplicar Filtro</button>
+            </div>
+        </div>
+    </form>
+
     <form method="POST">
         <table class="table table-hover table-bordered">
             <thead class="table-light">
@@ -45,12 +63,24 @@
                 <tr class="{% if dado[13] %}lido{% endif %}">
                     <td>{{ dado[1] if dado[1] else '' }}</td>
                     <td>{{ dado[2] if dado[2] else '' }}</td>
-                    <td class="{% if dado[3] == 'crítico' %}critico{% endif %}">{{ dado[3] if dado[3] else '' }}</td>
-                    <td class="{% if dado[4] == 'crítico' %}critico{% endif %}">{{ dado[4] if dado[4] else '' }}</td>
-                    <td class="{% if dado[5] == 'crítico' %}critico{% endif %}">{{ dado[5] if dado[5] else '' }}</td>
-                    <td class="{% if dado[6] == 'crítico' %}critico{% endif %}">{{ dado[6] if dado[6] else '' }}</td>
-                    <td class="{% if dado[7] == 'crítico' %}critico{% endif %}">{{ dado[7] if dado[7] else '' }}</td>
-                    <td class="{% if dado[8] == 'crítico' %}critico{% endif %}">{{ dado[8] if dado[8] else '' }}</td>
+                    <td class="{% if dado[3]['critico'] %}critico{% endif %}">
+                        {{ dado[3]['valor'] if dado[3]['valor'] else '' }}
+                    </td>
+                    <td class="{% if dado[4]['critico'] %}critico{% endif %}">
+                        {{ dado[4]['valor'] if dado[4]['valor'] else '' }}
+                    </td>
+                    <td class="{% if dado[5]['critico'] %}critico{% endif %}">
+                        {{ dado[5]['valor'] if dado[5]['valor'] else '' }}
+                    </td>
+                    <td class="{% if dado[6]['critico'] %}critico{% endif %}">
+                        {{ dado[6]['valor'] if dado[6]['valor'] else '' }}
+                    </td>
+                    <td class="{% if dado[7]['critico'] %}critico{% endif %}">
+                        {{ dado[7]['valor'] if dado[7]['valor'] else '' }}
+                    </td>
+                    <td class="{% if dado[8]['critico'] %}critico{% endif %}">
+                        {{ dado[8]['valor'] if dado[8]['valor'] else '' }}
+                    </td>
                     <td>{{ dado[9] if dado[9] else '' }}</td>
                     <td>{{ dado[10] if dado[10] else '' }}</td>
                     <td>{{ dado[11] if dado[11] else '' }}</td>
@@ -72,5 +102,8 @@
     <div class="text-center mt-4">
         <a href="/logout" class="btn btn-danger">Sair</a>
     </div>
+    <div class="text-end mb-3">
+        <a href="{{ url_for('exportar_excel') }}" class="btn btn-success">Exportar para Excel</a>
+    </div>    
 </body>
 </html>
